@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.example.dtos.CreateReferralProgramDto;
 import org.example.models.ReferralProgram;
 import org.example.services.ReferralProgramService;
+import org.example.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/referral-programs")
 public class ReferralProgramController {
-
-    @Autowired
-    ObjectMapper mapper;
+    
     @Autowired
     private ReferralProgramService referralProgramService;
 
     @PostMapping
-    public ResponseEntity<ReferralProgram> createReferralProgram(@Valid @RequestBody CreateReferralProgramDto createReferralProgramDto){
+    public ResponseEntity<ApiResponse<ReferralProgram>> createReferralProgram(@Valid @RequestBody CreateReferralProgramDto createReferralProgramDto){
         ReferralProgram newProgram = referralProgramService.create(createReferralProgramDto);
-        return new ResponseEntity<>(newProgram, HttpStatus.CREATED);
+
+        ApiResponse<ReferralProgram> response = new ApiResponse<>(
+                "Referral program created successfully",
+                newProgram
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
