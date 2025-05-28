@@ -37,6 +37,9 @@ public class ReferralProgram {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_active")
+    private boolean isActive;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
