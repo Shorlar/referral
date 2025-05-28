@@ -1,0 +1,2 @@
+ALTER TABLE referral_programs
+ADD COLUMN is_active BOOLEAN DEFAULT FALSE;

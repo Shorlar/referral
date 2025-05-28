@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dtos.CreateReferralProgramDto;
+import org.example.dtos.UpdateReferralStatusDto;
 import org.example.factories.ReferralProgramFactory;
 import org.example.models.ReferralProgram;
 import org.example.repositories.ReferralProgramRepository;
@@ -29,5 +30,22 @@ public class ReferralProgramService {
     public ReferralProgram getReferralProgramById(UUID id) {
         return referralProgramRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Referral program not found with id: " + id));
+    }
+
+    public ReferralProgram toggleReferralProgramStatus(UUID id, UpdateReferralStatusDto updateReferralStatusDto) {
+        ReferralProgram referralProgram = getReferralProgramById(id);
+
+        Boolean newStatus = updateReferralStatusDto.getIsActive();
+
+        if(Boolean.valueOf(referralProgram.isActive()).equals(newStatus)) {
+            throw new RuntimeException("Referral program is already in the requested state.");
+        }
+
+        if(newStatus){
+            referralProgramRepository.deactivateOtherPrograms(id);
+        }
+
+        referralProgram.setActive(newStatus);
+        return referralProgramRepository.save(referralProgram);
     }
 }
